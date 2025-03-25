@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "90320827550",
+    "project_id": "dwello-36580",
+    "storage_bucket": "dwello-36580.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90320827550:android:71c082806065340598b78f",
+        "android_client_info": {
+          "package_name": "com.example.dwello"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90320827550-m7uscvis9sj4f6ggvcnfv79cfl9pgmb8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dwello",
+            "certificate_hash": "01dedd0a0b9943bfe2be550a1bdf2ee74de54ee9"
+          }
+        },
+        {
+          "client_id": "90320827550-lmghnjlhgag8uofb7cgik5rp77dc2io8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6xcfH098OZdqiMIjhynY_MJMZgNCGjV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90320827550-lmghnjlhgag8uofb7cgik5rp77dc2io8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

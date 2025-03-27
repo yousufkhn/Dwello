@@ -2,10 +2,10 @@ package com.example.dwello.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -15,6 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
 import androidx.navigation.NavController
+import com.example.dwello.ui.components.loginscreen.GoogleSignInButton
+import com.example.dwello.ui.components.loginscreen.LoginHeader
 import com.example.dwello.utils.auth.GoogleAuthManager
 
 @Composable
@@ -29,21 +31,20 @@ fun LoginScreen(navController: NavController) {
             credentialManager,
             coroutineScope,
             onSignInSuccess = { navController.navigate("home") },
-            onSignInFailure = { /* Handle failure if needed */ }
+            onSignInFailure = { /* Handle failure */ }
         )
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(
-            onClick = { googleAuthManager.launchGoogleSignIn() },
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text("Sign in with Google")
+        LoginHeader()
+        Spacer(modifier = Modifier.height(32.dp))
+        GoogleSignInButton {
+            googleAuthManager.launchGoogleSignIn()
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
-

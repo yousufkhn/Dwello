@@ -73,6 +73,10 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
+    // retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+
     //google
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)

@@ -5,5 +5,5 @@ data class UserProfile(
     val name: String,
     val profile_pic: String,
     val location: String,
-    val preferred_location: String
+    val preferred_locations: List<String>
 )

@@ -80,4 +80,21 @@ class GoogleAuthManager(
             onSignInFailure("Unexpected credential type")
         }
     }
+
+    fun signOut(onSignOutSuccess: () -> Unit, onSignOutFailure: (String) -> Unit) {
+        coroutineScope.launch {
+            try {
+                credentialManager.clearCredentialState(
+                    ClearCredentialStateRequest()
+                )
+                Toast.makeText(context, "Signed out successfully", Toast.LENGTH_SHORT).show()
+                onSignOutSuccess()
+            } catch (e: Exception) {
+                Log.e("GoogleSignOut", "Sign-out failed: ${e.message}")
+                Toast.makeText(context, "Sign-out failed", Toast.LENGTH_SHORT).show()
+                onSignOutFailure(e.message ?: "Sign-out error")
+            }
+        }
+    }
+
 }

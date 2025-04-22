@@ -77,6 +77,19 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
 
+    //coil
+    implementation(libs.coil.compose)
+
+    //lottie
+    implementation(libs.lottie.compose)
+
+    implementation (libs.accompanist.pager)
+    implementation (libs.accompanist.pager.indicators)
+
+
+
+
+
     //google
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)

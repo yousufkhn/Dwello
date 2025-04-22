@@ -2,5 +2,11 @@ package com.example.dwello.navigation
 
 enum class Screens {
     LOGIN,
-    HOME
+    HOME,
+    LIKED,
+    REQUESTS,
+    PROFILE,
+    RENTED,
+    PROPERTY_DETAILS
+
 }

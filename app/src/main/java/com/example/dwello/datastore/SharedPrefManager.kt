@@ -29,6 +29,14 @@ class SharedPrefManager(context: Context) {
         return if (json != null) gson.fromJson(json, UserProfile::class.java) else null
     }
 
+    fun saveUserId(userId: String) {
+        prefs.edit().putString("user_id", userId).apply()
+    }
+
+    fun getUserId(): String? {
+        return prefs.getString("user_id", null)
+    }
+
     fun clear() {
         prefs.edit().clear().apply()
     }

@@ -1,9 +1,6 @@
 package com.example.dwello.ui.screens
 
-import LogoutButton
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,13 +19,11 @@ import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.dwello.datastore.SharedPrefManager
-import com.example.dwello.ui.components.PropertyCard
+import com.example.dwello.ui.components.homescreen.PropertyCard
 import com.example.dwello.ui.components.homescreen.AnimatedPreloader
 import com.example.dwello.ui.viewmodel.HomeViewModel
 import com.example.dwello.utils.auth.GoogleAuthManager
 import com.example.dwello.ui.components.SearchBar
-import com.example.dwello.viewmodel.AuthViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)

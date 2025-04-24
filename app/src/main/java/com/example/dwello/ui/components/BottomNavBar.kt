@@ -11,6 +11,7 @@ import com.example.dwello.navigation.Screens
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.*
+import com.example.dwello.R
 
 data class BottomNavItem(
     val screen: Screens,

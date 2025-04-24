@@ -1,7 +1,9 @@
 package com.example.dwello.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,6 +43,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.dwello.R
 import com.example.dwello.data.model.RentalRequestProperty
 import com.example.dwello.data.model.RequestingUser
+import com.example.dwello.ui.components.homescreen.AnimatedPreloader
 import com.example.dwello.ui.viewmodel.RequestsViewModel
 
 @Composable
@@ -60,12 +64,23 @@ fun RequestsScreen(navController: NavHostController) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(requests) { property ->
-                PropertyCard(property = property,viewModel = viewModel)
+        if (requests.isEmpty()) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                Box {
+                    AnimatedPreloader(modifier = Modifier.size(200.dp).align(Alignment.Center))
+                }
+            }
+        }else{
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(requests) { property ->
+                    PropertyCard(property = property,viewModel = viewModel)
+                }
             }
         }
     }
@@ -123,6 +138,8 @@ fun PropertyCard(property: RentalRequestProperty, viewModel: RequestsViewModel) 
                         user = user,
                         propertyId = property._id,
                         onAccept = {
+                            Log.d("PropertyCard", " ${property._id}")
+                            Log.d("PropertyCard", " ${user._id}")
                             viewModel.handleRequest(property._id, user._id, "accept")
                         },
                         onReject = {

@@ -99,6 +99,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
+
+
 //    fun toggleLike(propertyId: String) {
 //        val email = _userProfile.value?.email ?: return
 //        val currentList = _propertyList.value.toMutableList()

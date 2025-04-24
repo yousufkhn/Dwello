@@ -1,5 +1,6 @@
-package com.example.dwello.ui.components
+package com.example.dwello.ui.components.homescreen
 
+import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -32,16 +33,72 @@ import com.example.dwello.datastore.SharedPrefManager
 import com.example.dwello.navigation.Screens
 import com.example.dwello.ui.viewmodel.HomeViewModel
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
 
 @Composable
 fun PropertyCard(
-    property: Property
-    , navController: NavHostController
+    property: Property,
+    navController: NavHostController
 ) {
-    var liked by remember { mutableStateOf(false) }
-    var requestSent by remember { mutableStateOf(false) } // 👈 Track if rent was requested
     val context = LocalContext.current
+    val sharedPrefManager = SharedPrefManager(context)
     val homeViewModel: HomeViewModel = viewModel()
+    val coroutineScope = rememberCoroutineScope()
+    val client = OkHttpClient()
+
+    // Get user email from SharedPreferences
+    val userProfile = sharedPrefManager.getUserProfile()
+    val userEmail = userProfile?.email ?: "khanyousuf2144@gmail.com" // Default email if not found
+
+    // Check if property is liked from SharedPreferences
+    val likeKey = "property_like_${property.id}"
+    var liked by remember {
+        mutableStateOf(sharedPrefManager.prefs.getBoolean(likeKey, false))
+    }
+    var requestSent by remember { mutableStateOf(false) }
+
+    fun toggleLike() {
+        coroutineScope.launch {
+            try {
+                val isLiking = !liked
+                val endpoint = if (isLiking) "like" else "unlike"
+                val url = "https://rjbcjks3-8080.inc1.devtunnels.ms/api/properties/${property.id}/$endpoint?email=$userEmail"
+
+                val request = Request.Builder()
+                    .url(url)
+                    .post(okhttp3.RequestBody.create(null, ByteArray(0)))
+                    .build()
+
+                withContext(Dispatchers.IO) {
+                    client.newCall(request).execute().use { response ->
+                        withContext(Dispatchers.Main) {
+                            if (response.isSuccessful) {
+                                liked = isLiking
+                                // Save like state to SharedPreferences
+                                sharedPrefManager.prefs.edit().putBoolean(likeKey, liked).apply()
+
+                                val message = if (isLiking) "Property added to favorites" else "Property removed from favorites"
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, "Failed to update like status", Toast.LENGTH_SHORT).show()
+                                Log.e("PropertyCard", "API error: ${response.code} ${response.message}")
+                            }
+                        }
+                    }
+                }
+            } catch (e: IOException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("PropertyCard", "Network error", e)
+                }
+            }
+        }
+    }
 
     Card(
         modifier = Modifier
@@ -69,7 +126,7 @@ fun PropertyCard(
                 )
 
                 IconButton(
-                    onClick = { liked = !liked },
+                    onClick = { toggleLike() },
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
@@ -78,7 +135,7 @@ fun PropertyCard(
                 ) {
                     Icon(
                         imageVector = if (liked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Like",
+                        contentDescription = if (liked) "Unlike" else "Like",
                         tint = if (liked) Color.Red else Color.Gray
                     )
                 }
@@ -137,7 +194,6 @@ fun PropertyCard(
 
                 Button(
                     onClick = {
-                        val sharedPrefManager = SharedPrefManager(context)
                         val userId = sharedPrefManager.getUserId()
 
                         if (userId != null) {
@@ -145,7 +201,7 @@ fun PropertyCard(
                                 id = property.id,
                                 userId = userId,
                                 onSuccess = {
-                                    requestSent = true // 👈 Update state
+                                    requestSent = true
                                     Toast.makeText(context, "Rent request sent!", Toast.LENGTH_SHORT).show()
                                 },
                                 onError = {
@@ -154,7 +210,7 @@ fun PropertyCard(
                             )
                         }
                     },
-                    enabled = !requestSent, // 👈 Disable button after request
+                    enabled = !requestSent,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
@@ -164,7 +220,7 @@ fun PropertyCard(
                     )
                 ) {
                     Text(
-                        text = if (requestSent) "Request Sent" else "Request Rent", // 👈 Dynamic label
+                        text = if (requestSent) "Request Sent" else "Request for Lease",
                         color = Color.White,
                         fontSize = 16.sp
                     )
@@ -173,3 +229,7 @@ fun PropertyCard(
         }
     }
 }
+
+// Extension property to make SharedPrefManager.prefs accessible
+val SharedPrefManager.prefs: SharedPreferences
+    get() = this.javaClass.getDeclaredField("prefs").apply { isAccessible = true }.get(this) as SharedPreferences

@@ -10,12 +10,14 @@ import com.google.android.libraries.identity.googleid.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.UUID
+import org.json.JSONObject
+import android.util.Base64
 
 class GoogleAuthManager(
     private val context: Context,
     private val credentialManager: CredentialManager,
     private val coroutineScope: CoroutineScope,
-    private val onSignInSuccess: (String) -> Unit,
+    private val onSignInSuccess: (GoogleUser) -> Unit,
     private val onSignInFailure: (String) -> Unit
 ) {
     private val googleIdOption = GetGoogleIdOption.Builder()
@@ -48,8 +50,27 @@ class GoogleAuthManager(
             try {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 val idToken = googleIdTokenCredential.idToken
-                Log.d("GoogleSignIn", "ID Token: $idToken")
-                onSignInSuccess(idToken)
+
+                // Decode the JWT to extract user info
+                val parts = idToken.split(".")
+                if (parts.size == 3) {
+                    val payloadJson = String(Base64.decode(parts[1], Base64.URL_SAFE))
+                    val payload = JSONObject(payloadJson)
+
+                    val email = payload.optString("email")
+                    val name = payload.optString("name")
+                    val picture = payload.optString("picture")
+
+                    if (email.isNotEmpty() && name.isNotEmpty()) {
+                        val user = GoogleUser(email = email, name = name, profilePicUrl = picture)
+                        onSignInSuccess(user)
+                    } else {
+                        onSignInFailure("Missing user info from ID token")
+                    }
+                } else {
+                    onSignInFailure("Invalid ID token format")
+                }
+
             } catch (e: GoogleIdTokenParsingException) {
                 Log.e("GoogleSignIn", "Invalid Google ID token", e)
                 onSignInFailure("Invalid Google ID token")
@@ -59,4 +80,21 @@ class GoogleAuthManager(
             onSignInFailure("Unexpected credential type")
         }
     }
+
+    fun signOut(onSignOutSuccess: () -> Unit, onSignOutFailure: (String) -> Unit) {
+        coroutineScope.launch {
+            try {
+                credentialManager.clearCredentialState(
+                    ClearCredentialStateRequest()
+                )
+                Toast.makeText(context, "Signed out successfully", Toast.LENGTH_SHORT).show()
+                onSignOutSuccess()
+            } catch (e: Exception) {
+                Log.e("GoogleSignOut", "Sign-out failed: ${e.message}")
+                Toast.makeText(context, "Sign-out failed", Toast.LENGTH_SHORT).show()
+                onSignOutFailure(e.message ?: "Sign-out error")
+            }
+        }
+    }
+
 }

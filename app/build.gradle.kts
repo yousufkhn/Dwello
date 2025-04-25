@@ -73,6 +73,27 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
+    // retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+
+    //coil
+    implementation(libs.coil.compose)
+
+    //lottie
+    implementation(libs.lottie.compose)
+
+    implementation (libs.accompanist.pager)
+    implementation (libs.accompanist.pager.indicators)
+
+
+    implementation(libs.androidx.core.splashscreen)
+
+    implementation (libs.accompanist.swiperefresh)
+    implementation (libs.androidx.foundation)
+
+
+
     //google
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)

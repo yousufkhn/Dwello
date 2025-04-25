@@ -87,6 +87,10 @@ dependencies {
     implementation (libs.accompanist.pager.indicators)
 
 
+    implementation(libs.androidx.core.splashscreen)
+
+    implementation (libs.accompanist.swiperefresh)
+    implementation (libs.androidx.foundation)
 
 
 

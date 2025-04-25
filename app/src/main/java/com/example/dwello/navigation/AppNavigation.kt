@@ -1,12 +1,19 @@
 package com.example.dwello.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -15,7 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,6 +40,9 @@ import com.example.dwello.ui.components.BottomNavBar
 import com.example.dwello.ui.screens.*
 import com.example.dwello.viewmodel.AuthViewModel
 
+// The primary theme color
+val PurpleTheme = Color(0xFF7b4bee)
+
 enum class Screens {
     LOGIN,
     HOME,
@@ -35,7 +51,7 @@ enum class Screens {
     RENTED,
     PROFILE,
     PROPERTY_DETAILS,
-    ADD_PROPERTY  // Added new screen for property addition
+    ADD_PROPERTY
 }
 
 @Composable
@@ -61,7 +77,8 @@ fun AppNavigation(navController: NavHostController) {
         Screens.RENTED.name
     )
 
-    val showFab = showBottomBar  // Show FAB on the same screens as the bottom bar
+    val showFab = showBottomBar
+    val expandedFab = rememberSaveable { mutableStateOf(true) }
 
     Scaffold(
         bottomBar = {
@@ -73,9 +90,43 @@ fun AppNavigation(navController: NavHostController) {
             if (showFab) {
                 ExtendedFloatingActionButton(
                     onClick = { navController.navigate(Screens.ADD_PROPERTY.name) },
-                    icon = { Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Property") },
-                    text = { Text(text = "Add a Property", fontSize = 14.sp) },
-                    elevation = FloatingActionButtonDefaults.elevation(8.dp)
+                    expanded = expandedFab.value,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Add Property",
+                            tint = Color.White
+                        )
+                    },
+                    text = {
+                        AnimatedVisibility(
+                            visible = expandedFab.value,
+                            enter = fadeIn() + expandHorizontally(),
+                            exit = fadeOut() + shrinkHorizontally()
+                        ) {
+                            Text(
+                                text = "Add a Property",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White
+                            )
+                        }
+                    },
+                    shape = RoundedCornerShape(24.dp),
+                    containerColor = PurpleTheme,
+                    contentColor = Color.White,
+                    elevation = FloatingActionButtonDefaults.elevation(
+                        defaultElevation = 6.dp,
+                        pressedElevation = 12.dp,
+                        hoveredElevation = 8.dp,
+                        focusedElevation = 8.dp
+                    ),
+                    modifier = Modifier.shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(24.dp),
+                        ambientColor = PurpleTheme.copy(alpha = 0.3f),
+                        spotColor = PurpleTheme.copy(alpha = 0.4f)
+                    )
                 )
             }
         }

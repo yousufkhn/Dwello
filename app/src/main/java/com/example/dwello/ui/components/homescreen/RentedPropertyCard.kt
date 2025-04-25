@@ -61,7 +61,7 @@ fun RentedPropertyCard(
                 )
 
                 Text(
-                    text = "₹${property.price}",
+                    text = "₹${property.price}/month",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF0064FE),

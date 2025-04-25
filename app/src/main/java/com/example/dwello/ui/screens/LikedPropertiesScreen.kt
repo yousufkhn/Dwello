@@ -97,21 +97,12 @@ fun LikedPropertiesScreen(navController: NavHostController) {
     // UI
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Favorites") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF006EFF),
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
-                )
+            Text(
+                text = "Liked Properties",
+                fontSize = 24.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(16.dp)
             )
         }
     ) { paddingValues ->

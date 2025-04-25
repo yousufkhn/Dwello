@@ -155,7 +155,7 @@ fun PropertyCard(
                 )
 
                 Text(
-                    text = "₹${property.price}",
+                    text = "₹${property.price}/month",
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,

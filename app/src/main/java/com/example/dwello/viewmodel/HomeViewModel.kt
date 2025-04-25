@@ -59,7 +59,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun fetchProperties() {
+    fun fetchProperties() {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
